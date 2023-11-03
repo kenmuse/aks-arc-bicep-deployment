@@ -67,8 +67,8 @@ main() {
   # Configure kubectl with the appropriate credentials
   az aks get-credentials --resource-group "${resource_group}" --name "${cluster_name}"
   
-  ./helmfile init --force
-  ./helmfile apply
+  helmfile init --force
+  helmfile apply
 }
 
 main "$@"
