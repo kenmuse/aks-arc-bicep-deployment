@@ -36,7 +36,7 @@ jobs:
       - uses: azure/cli@v1
         id: azcli
         env:
-            CLUSTER_NAME: arctest
+            CLUSTER_NAME: krmarctst
         with:
           azcliversion: 2.36.0
           inlineScript: |
