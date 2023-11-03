@@ -1,8 +1,13 @@
+##########################################
 # Required Secrets
+##########################################
 # - AZURE_CLIENT_ID
 # - AZURE_TENANT_ID
 # - AZURE_SUBSCRIPTION_ID
+
+##########################################
 # Required vars
+##########################################
 # - RESOURCE_GROUP
 # - RESOURCE_GROUP_LOCATION
 
@@ -13,9 +18,18 @@ on:
     branches: ["main"]
   workflow_dispatch:
 
+# Configure least privileges
+# - `id-token: write` allows the workflow to
+#   create a token for OIDC authentication with Azure.
+# - `contents: read` allows the workflow to
+#   download the repository.
+
 permissions:
   id-token: write
   contents: read
+
+env:
+  CLUSTER_NAME: arctest
 
 jobs:
   deploy:
@@ -33,34 +47,20 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      # Execute a script using the Azure CLI. The script itself
+      # is external so that it can be locally tested and verified
       - uses: azure/cli@v1
         id: azcli
-        env:
-            CLUSTER_NAME: arctest
         with:
           azcliversion: 2.36.0
           inlineScript: |
             #!/bin/bash
 
-            # Create an Azure Resource Group (requires current credential to 
-            # have subscription contribution permissions)
-            az group create --name ${{ vars.RESOURCE_GROUP }} --location ${{ vars.RESOURCE_GROUP_LOCATION }}
+            ./scripts/deploy-aks.sh -r '${{ vars.RESOURCE_GROUP }}' -n '${{ env.CLUSTER_NAME }}' -l '${{ vars.RESOURCE_GROUP_LOCATION }}'
 
-            # Deploy the Bicep template capture the output
-            # to the environment variable DEPLOY_OUTPUT. This requires the credential being
-            # used to have Contributor rights in the Resource Group (or higher)
-            DEPLOY_OUTPUT=$(az deployment group create --resource-group ${{ vars.RESOURCE_GROUP }} --template-file "aks.bicep" --parameters "clusterName=$CLUSTER_NAME" )
-
-            # Parse DEPLOY_OUTPUT with jq to retrieve the control plan FQDN
-            # Create an env variable to store the values.
-            CONTROL_PLANE_FQDN=$(jq --raw-output '.properties.outputs.controlPlaneFQDN.value' <<< "$DEPLOY_OUTPUT")
-
-            # Create an output variable called CONTROL_PLANE_FQDN from the environment
-            # variable of the same name. This makes the value available from other steps.
-            echo "::set-output name=CONTROL_PLANE_FQDN::$CONTROL_PLANE_FQDN"
-
-            # Create an output variable with the cluster name
-            echo "::set-output name=CLUSTER_NAME::$CLUSTER_NAME"
+      # These actions could be used for most of the process, but instead I'm
+      # using command line options via a script to make the process repeatable
+      # and locally verifiable
 
       # Use kubelogin to configure your kubeconfig for Azure auth
       # - name: Set up kubelogin for non-interactive login
@@ -77,11 +77,4 @@ jobs:
       #     admin: 'false'
       #     use-kubelogin: 'true'
 
-      - run: |
-          az aks install-cli
-          az aks get-credentials --resource-group ${{ vars.RESOURCE_GROUP }} --name ${{ steps.azcli.outputs.CLUSTER_NAME }}
-          curl -L https://github.com/helmfile/helmfile/releases/download/v0.158.1/helmfile_0.158.1_linux_amd64.tar.gz > helmfile.tar.gz
-          tar -xzvf ./helmfile.tar.gz
-          chmod +x helmfile
-          ./helmfile init --force
-          ./helmfile apply
+      - run: ./scripts/deploy-helm.sh -r '${{ vars.RESOURCE_GROUP }}' -n '${{ steps.azcli.outputs.CLUSTER_NAME }}'
