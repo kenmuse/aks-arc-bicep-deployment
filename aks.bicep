@@ -1,5 +1,8 @@
 @description('The name of the Managed Cluster resource.')
-param clusterName string = 'arc-cluster'
+param clusterName string
+
+@description('The name of the Managed Cluster resource.')
+param dnsPrefix string = '${clusterName}-dns'
 
 @description('The location of the Managed Cluster resource.')
 param location string = resourceGroup().location
@@ -8,11 +11,6 @@ param location string = resourceGroup().location
 @minValue(0)
 @maxValue(1023)
 param osDiskSizeGB int = 0
-
-@description('The number of nodes for the cluster.')
-@minValue(1)
-@maxValue(50)
-param agentCount int = 3
 
 @description('The size of the Virtual Machine.')
 param agentVMSize string = 'standard_d2s_v3'
@@ -24,17 +22,23 @@ resource aks 'Microsoft.ContainerService/managedClusters@2023-07-01' = {
     type: 'SystemAssigned'
   }
   sku: {
-    name:
-    trier:
+    name: 'Base'
+    tier: 'Free'
   }
   properties: {
+    kubernetesVersion: '1.27.3'
+    dnsPrefix: dnsPrefix
     agentPoolProfiles: [
       {
         name: 'agentpool'
         osDiskSizeGB: osDiskSizeGB
+        osSKU: 'Ubuntu'
         enableAutoScaling: true
         enableUltraSSD: false
-        count: agentCount
+        count: 1
+        minCount: 1
+        maxCount: 3
+        type: 'VirtualMachineScaleSets'
         vmSize: agentVMSize
         osType: 'Linux'
         mode: 'System'

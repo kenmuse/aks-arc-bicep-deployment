@@ -36,7 +36,7 @@ jobs:
       - uses: azure/cli@v1
         id: azcli
         env:
-            CLUSTER_NAME: krmarctst
+            CLUSTER_NAME: arctest
         with:
           azcliversion: 2.36.0
           inlineScript: |
@@ -49,7 +49,7 @@ jobs:
             # Deploy the Bicep template capture the output
             # to the environment variable DEPLOY_OUTPUT. This requires the credential being
             # used to have Contributor rights in the Resource Group (or higher)
-            DEPLOY_OUTPUT=$(az deployment group create --resource-group ${{ vars.RESOURCE_GROUP }} --template-file "aks.bicep" --parameters "clusterName='$CLUSTER_NAME'" )
+            DEPLOY_OUTPUT=$(az deployment group create --resource-group ${{ vars.RESOURCE_GROUP }} --template-file "aks.bicep" --parameters "clusterName=$CLUSTER_NAME" )
 
             # Parse DEPLOY_OUTPUT with jq to retrieve the control plan FQDN
             # Create an env variable to store the values.

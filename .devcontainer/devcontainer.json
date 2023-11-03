@@ -1,0 +1,28 @@
+{
+	"name": "Bicep",
+	"build": {
+		"dockerfile": "Dockerfile",
+	},
+	
+	// Any default configuration settings needed
+	"settings": {},
+
+    // The most important extensions for Bicep Development
+	"extensions": [
+		"ms-dotnettools.vscode-dotnet-runtime",
+		"ms-vscode.azure-account",
+		"ms-azuretools.vscode-bicep",
+		"msazurermtools.azurerm-vscode-tools"
+	],
+
+    // Restrict the total memory consumed by the container.
+	"runArgs": [
+		"--memory=1.2g"
+	],
+
+	"remoteUser": "vscode",
+	
+	"features": {
+		"ghcr.io/devcontainers/features/azure-cli:1": {}
+	}
+}
