@@ -18,8 +18,9 @@ permissions:
   contents: read
 
 jobs:
-  buildImage:
+  deploy:
     runs-on: ubuntu-latest
+    environment: prod
     steps:
       # Checks out the repository this file is in
       - uses: actions/checkout@v3
