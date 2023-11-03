@@ -1,0 +1,19 @@
+releases:
+  - name: arc
+    chart: oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set-controller
+    version: 0.6.1
+    namespace: arc-systems
+
+  - name: arc-runner-set
+    chart: oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
+    version: 0.6.1
+    needs: 
+     - arc-systems/arc
+    namespace: arc-runners
+    values:
+      - controllerServiceAccount:
+          name: arc-gha-rs-controller
+          namespace: arc-systems
+      - githubConfigUrl: https://github.com/kenmuse-org
+      - githubConfigSecret: runner-secret
+      - maxRunners: 10

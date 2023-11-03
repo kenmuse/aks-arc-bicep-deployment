@@ -80,8 +80,8 @@ jobs:
       - run: |
           az aks install-cli
           az aks get-credentials --resource-group ${{ vars.RESOURCE_GROUP }} --name ${{ steps.azcli.outputs.CLUSTER_NAME }}
-          curl -sL https://github.com/helmfile/helmfile/releases/download/v0.158.1/helmfile_0.158.1_linux_amd64.tar.gz -O helmfile.tar.gz
-          tar -xzvf ./helmfile.tar.gz"
+          curl -L https://github.com/helmfile/helmfile/releases/download/v0.158.1/helmfile_0.158.1_linux_amd64.tar.gz > helmfile.tar.gz
+          tar -xzvf ./helmfile.tar.gz
           chmod +x helmfile
-          ./helmfile init
+          ./helmfile init --force
           ./helmfile apply
