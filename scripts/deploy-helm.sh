@@ -68,7 +68,7 @@ main() {
   az aks get-credentials --resource-group "${resource_group}" --name "${cluster_name}"
   
   helmfile init --force
-  helmfile apply
+  helmfile apply --skip-diff-on-install
 }
 
 main "$@"
