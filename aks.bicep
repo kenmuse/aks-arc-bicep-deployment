@@ -17,17 +17,23 @@ param agentCount int = 3
 @description('The size of the Virtual Machine.')
 param agentVMSize string = 'standard_d2s_v3'
 
-resource aks 'Microsoft.ContainerService/managedClusters@2022-05-02-preview' = {
+resource aks 'Microsoft.ContainerService/managedClusters@2023-07-01' = {
   name: clusterName
   location: location
   identity: {
     type: 'SystemAssigned'
+  }
+  sku: {
+    name:
+    trier:
   }
   properties: {
     agentPoolProfiles: [
       {
         name: 'agentpool'
         osDiskSizeGB: osDiskSizeGB
+        enableAutoScaling: true
+        enableUltraSSD: false
         count: agentCount
         vmSize: agentVMSize
         osType: 'Linux'
