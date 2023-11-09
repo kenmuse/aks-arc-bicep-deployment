@@ -1,4 +1,4 @@
-# Project Name (Sample)
+# Azure Kubernetes Service ARC Deployment using Bicep (Sample)
 
 ## About
 
