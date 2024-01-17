@@ -1,8 +1,8 @@
-FROM mcr.microsoft.com/vscode/devcontainers/dotnet:6.0
+FROM mcr.microsoft.com/vscode/devcontainers/dotnet:8.0-bookworm
 # FROM mcr.microsoft.com/devcontainers/universal:linux
 
 ARG BICEP_VERSION=latest
-ARG POWERSHELL_VERSION=7.2.16
+ARG POWERSHELL_VERSION=7.4.1
 
 # Install tools
 RUN dotnet tool install -g powershell --version $POWERSHELL_VERSION \
