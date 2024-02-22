@@ -1,9 +1,8 @@
 ###############################################################################################
 # AKS Deployment
 ###############################################################################################
-#  Description
-#  --------------------------
-#    Publishes an ARC environment to Azure Kubernetes Service (AKS) using Bicep templates.
+#
+#  Publishes an ARC environment to Azure Kubernetes Service (AKS) using Bicep templates.
 #
 #  Required Secrets
 #  --------------------------
