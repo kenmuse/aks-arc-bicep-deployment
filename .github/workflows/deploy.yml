@@ -1,15 +1,22 @@
-##########################################
-# Required Secrets
-##########################################
-# - AZURE_CLIENT_ID
-# - AZURE_TENANT_ID
-# - AZURE_SUBSCRIPTION_ID
-
-##########################################
-# Required vars
-##########################################
-# - RESOURCE_GROUP
-# - RESOURCE_GROUP_LOCATION
+###############################################################################################
+# AKS Deployment
+###############################################################################################
+#  Description
+#  --------------------------
+#    Publishes an ARC environment to Azure Kubernetes Service (AKS) using Bicep templates.
+#
+#  Required Secrets
+#  --------------------------
+#    - AZURE_CLIENT_ID - Azure application Client ID for OIDC
+#    - AZURE_TENANT_ID - Azure Entra ID tenant identifier
+#    - AZURE_SUBSCRIPTION_ID - Azure subscription containing the resources
+#
+#  Required variables
+#  --------------------------
+#    - RESOURCE_GROUP: Target resource group for the AKS instance
+#    - RESOURCE_GROUP_LOCATION: Target Azure region for the resource group and resources
+#
+###############################################################################################
 
 name: AKS Deployment
 
